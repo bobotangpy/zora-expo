@@ -1,0 +1,62 @@
+{
+  "1": {
+    "product_id": 11,
+    "name": "Head Over Heels Hazen black patent flat shoes",
+    "style_id": 1,
+    "type_id": 1,
+    "gender_id": 1,
+    "price": "HKD$190.48",
+    "img": "https://images.asos-media.com/products/head-over-heels-hazen-black-patent-flat-shoes/11916217-1-blackcroc?$n_480w$\u0026wid=476\u0026fit=constrain",
+    "horoscope_id": "Sagittarius"
+  },
+  "2": {
+    "product_id": 13,
+    "name": "adidas Originals Adilette black and white slider",
+    "style_id": 1,
+    "type_id": 1,
+    "gender_id": 1,
+    "price": "HKD$317.46",
+    "img": "https://images.asos-media.com/products/adidas-originals-adilette-black-and-white-slider/10979206-1-black?$n_480w$\u0026wid=476\u0026fit=constrain",
+    "horoscope_id": "Aquarius"
+  },
+  "3": {
+    "product_id": 14,
+    "name": "Nike Black Kawa Swoosh Slider",
+    "style_id": 1,
+    "type_id": 1,
+    "gender_id": 1,
+    "price": "HKD$190.48",
+    "img": "https://images.asos-media.com/products/nike-black-kawa-swoosh-slider/11115382-1-blackwhite?$n_480w$\u0026wid=476\u0026fit=constrain",
+    "horoscope_id": "Pisces"
+  },
+  "4": {
+    "product_id": 15,
+    "name": "RAID Wink bright red square toe block heeled sandals",
+    "style_id": 1,
+    "type_id": 1,
+    "gender_id": 1,
+    "price": "HKD$264.44",
+    "img": "https://images.asos-media.com/products/raid-wink-bright-red-square-toe-block-heeled-sandals/11608609-1-redmicro?$n_480w$\u0026wid=476\u0026fit=constrain",
+    "horoscope_id": "Taurus"
+  },
+  "5": {
+    "product_id": 210,
+    "name": "LookBook DESIGN Plus paisley kimono floral wrap in mustard",
+    "style_id": 3,
+    "type_id": 0,
+    "gender_id": 0,
+    "price": "HKD$370.37",
+    "img": "https://images.asos-media.com/products/asos-design-plus-paisley-kimono-floral-wrap-in-mustard/12040151-1-yellow?$n_480w$\u0026wid=476\u0026fit=constrain",
+    "horoscope_id": "Pisces"
+  },
+  "6": {
+    "product_id": 229,
+    "name": "LookBook DESIGN knitted half zip t-shirt in neon green",
+    "style_id": 3,
+    "type_id": 2,
+    "gender_id": 0,
+    "price": "HKD$211.64",
+    "img": "https://images.asos-media.com/products/asos-design-knitted-half-zip-t-shirt-in-neon-green/11526896-1-green?$n_480w$\u0026wid=476\u0026fit=constrain",
+    "horoscope_id": "Virgo"
+  }
+}
