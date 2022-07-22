@@ -18,6 +18,7 @@ import "react-native-gesture-handler";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Entypo from "react-native-vector-icons/Entypo";
 import { reduxStore } from "../redux/_index";
+import SyncStorage from "sync-storage";
 
 const Stack = createStackNavigator();
 
@@ -158,10 +159,15 @@ const BottomTabNavigator = ({ userTheme }) => {
       <Tab.Screen
         name="Profile"
         component={
-          reduxStore.getState().auth.isAuthenticated
+          // reduxStore.getState().auth.isAuthenticated
+          SyncStorage.get("user_token") &&
+          SyncStorage.get("user_token") !== undefined
             ? Profile
             : LoginStackScreen
         }
+        options={{
+          unmountOnBlur: !SyncStorage.get("user_token") ? true : false,
+        }}
       />
       <Tab.Screen
         name="Cart"

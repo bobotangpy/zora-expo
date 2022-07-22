@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -9,24 +9,24 @@ import {
   SafeAreaView,
   StyleSheet,
   ScrollView,
-  ImageBackground,
   Image,
   Dimensions,
-} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import DatePicker from 'react-native-modern-datepicker';
-import {calculateHoroscope} from '../../utilities/utils';
-import {AppContext} from '../../services/appProvider';
-import Loading from '../../components/loading';
-import {BgWrapper} from '../../components/bgWrapper';
-import commonStyles from '../../styles/common.js';
-import loginStyles from '../../styles/loginStyles';
-import API from '../../services/api';
-import moment from 'moment';
-import {images, bg} from '../../utilities/images';
-import SyncStorage from 'sync-storage';
-import {useDispatch} from 'react-redux';
-import {logoutUser} from '../../redux/authSlice.js';
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import DatePicker from "react-native-modern-datepicker";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../redux/authSlice.js";
+import { calculateHoroscope } from "../../utilities/utils";
+import { AppContext } from "../../services/appProvider";
+import Loading from "../../components/loading";
+import { BgWrapper } from "../../components/bgWrapper";
+import commonStyles from "../../styles/common.js";
+import loginStyles from "../../styles/loginStyles";
+import { images } from "../../utilities/images";
+import API from "../../services/api";
+import moment from "moment";
+import SyncStorage from "sync-storage";
+// import StyleSheet from "react-native-media-query";
 
 const api = new API();
 
@@ -42,28 +42,28 @@ export default function Profile() {
   const [sign, setSign] = useState(null);
   const [pwdErr, setPwdErr] = useState(false);
   const [imgPath, setImgPath] = useState();
-  // const [bgPath, setBgPath] = useState();
 
   useEffect(() => {
+    console.log("PROFILE ::: ", SyncStorage.get("user_token"));
+
     context.setLoading(true);
-    let user = SyncStorage.get('user_id');
+    let user = SyncStorage.get("user_id");
     if (user) {
-      // console.log('PROFILE get email ::: ', SyncStorage.get('horoscope'));
-      setEmail(SyncStorage.get('email'));
-      setName(SyncStorage.get('username'));
-      setSign(SyncStorage.get('horoscope'));
+      setEmail(SyncStorage.get("email"));
+      setName(SyncStorage.get("username"));
+      setSign(SyncStorage.get("horoscope"));
 
       api
         .queryUserProfile(user)
-        .then(res => {
+        .then((res) => {
           // console.log('USER DATA:::', res);
-          if (res && res.hasOwnProperty('name')) {
-            setBday(moment(res.birthday).format('YYYY/MM/DD'));
+          if (res && res.hasOwnProperty("name")) {
+            setBday(moment(res.birthday).format("YYYY/MM/DD"));
           } else {
-            console.log('No user data');
+            console.log("No user data");
           }
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
     }
   }, []);
 
@@ -71,7 +71,6 @@ export default function Profile() {
     if (sign) {
       let signName = sign.toLowerCase();
       setImgPath(images[signName]);
-      // setBgPath(bg[signName]);
     }
 
     if (email && name && bday && sign) context.setLoading(false);
@@ -85,10 +84,10 @@ export default function Profile() {
 
   useEffect(() => {
     if (bday) {
-      // console.log(bday);
-      let date = bday.length !== 10 ? moment(bday).format('YYYY/MM/DD') : bday;
-      let month = Number(date.split('/')[1]);
-      let day = Number(date.split('/')[2]);
+      console.log(bday);
+      let date = bday.length !== 10 ? moment(bday).format("YYYY/MM/DD") : bday;
+      let month = Number(date.split("/")[1]);
+      let day = Number(date.split("/")[2]);
 
       let sign = calculateHoroscope(month, day);
       setSign(sign);
@@ -96,14 +95,15 @@ export default function Profile() {
   }, [bday]);
 
   const handleUpdateProfile = () => {
-    api.updateUserProfile(context.userId, name, pwd, bday, sign).then(res => {
+    api.updateUserProfile(context.userId, name, pwd, bday, sign).then((res) => {
       console.log(res);
     });
   };
 
   const handleLogout = () => {
     dispatch(logoutUser());
-    navigation.navigate('HomeScreen');
+    context.setLoggedOut(true);
+    navigation.navigate("HomeScreen");
   };
 
   return (
@@ -143,7 +143,7 @@ export default function Profile() {
                 style={commonStyles.input}
                 selectionColor="#fef9ef"
                 secureTextEntry={true}
-                onChangeText={text => setPwd(text)}
+                onChangeText={(text) => setPwd(text)}
               />
 
               <Text style={[loginStyles.label, commonStyles.lightTxt]}>
@@ -153,7 +153,7 @@ export default function Profile() {
                 style={commonStyles.input}
                 selectionColor="#fef9ef"
                 secureTextEntry={true}
-                onChangeText={text => setConfirmPwd(text)}
+                onChangeText={(text) => setConfirmPwd(text)}
               />
               {pwdErr && (
                 <Text style={commonStyles.inputErrTxt}>
@@ -164,34 +164,43 @@ export default function Profile() {
               <Text
                 style={[
                   commonStyles.lightTxt,
-                  {fontSize: 16, textAlign: 'center', marginBottom: 15},
-                ]}>
+                  { fontSize: 16, textAlign: "center", marginBottom: 15 },
+                ]}
+              >
                 Birthday
               </Text>
               {!bday ? (
                 <Loading />
               ) : (
+                // <DatePicker
+                //   date={new Date(bday).toString()}
+                //   onChange={(date) =>
+                //     setBday(moment(date).format("YYYY/MM/DD"))
+                //   }
+                // />
                 <DatePicker
                   mode="calendar"
                   current={`${bday}`}
                   selected={`${bday}`}
-                  onSelectedChange={date => setBday(date)}
+                  onSelectedChange={(date) => setBday(date)}
                 />
               )}
 
               {imgPath && (
                 <View
                   style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
                   <Text
                     style={[
                       commonStyles.lightTxt,
-                      {fontSize: 16, marginTop: 17},
-                    ]}>
+                      { fontSize: 16, marginTop: 17 },
+                    ]}
+                  >
                     {sign}
                   </Text>
                   <Image
@@ -206,18 +215,20 @@ export default function Profile() {
                 </View>
               )}
 
-              <View style={{marginTop: 30}}>
+              <View style={{ marginTop: 30 }}>
                 <TouchableOpacity
                   style={commonStyles.borderBtn}
-                  onPress={handleUpdateProfile}>
+                  onPress={handleUpdateProfile}
+                >
                   <Text style={commonStyles.lightTxt}>Update Profile</Text>
                 </TouchableOpacity>
               </View>
 
-              <View style={{marginTop: 20}}>
+              <View style={{ marginTop: 20 }}>
                 <TouchableOpacity
                   style={commonStyles.blockBtn}
-                  onPress={handleLogout}>
+                  onPress={handleLogout}
+                >
                   <Text style={commonStyles.label}>Logout</Text>
                 </TouchableOpacity>
               </View>
@@ -242,10 +253,13 @@ const styles = StyleSheet.create({
   //   width: '100%',
   // },
   container: {
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
     paddingTop: 40,
-    width: Dimensions.get('window').width - 80,
-    height: Dimensions.get('window').height + 270,
+    width: Dimensions.get("window").width - 80,
+    height: Dimensions.get("window").height + 270,
+    // "@media (max-height: 667px)": {
+    //   height: Dimensions.get("window").height + 670,
+    // },
   },
 });
