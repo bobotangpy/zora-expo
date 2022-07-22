@@ -1,14 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
-import AppNavigator from "./navigation/AppNavigator";
+import AppNavigator from "./src/navigation/AppNavigator";
 import SyncStorage from "sync-storage";
-import { Theme } from "./utilities/themes";
-import { calculateHoroscope } from "./utilities/utils";
-import { images } from "./utilities/images";
+import { Theme } from "./src/utilities/themes";
+import { calculateHoroscope } from "./src/utilities/utils";
+import { images } from "./src/utilities/images";
 import moment from "moment";
+import useColorScheme from "react-native/Libraries/Utilities/useColorScheme";
 
 const App = () => {
+  const userTheme = useColorScheme();
   const [sign, setSign] = useState();
   const [imgPath, setImgPath] = useState();
 
@@ -43,7 +45,7 @@ const App = () => {
   return (
     <SafeAreaProvider>
       <NavigationContainer theme={Theme}>
-        {sign && <AppNavigator />}
+        {sign && <AppNavigator userTheme={userTheme} />}
       </NavigationContainer>
     </SafeAreaProvider>
   );

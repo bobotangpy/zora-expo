@@ -1,24 +1,23 @@
-import React from 'react';
-import {useNavigation, NavigationActions} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {createStackNavigator} from '@react-navigation/stack';
-import {useSelector} from 'react-redux';
-import Home from '../screens/_Home';
-// import Category from '../screens/Category';
-import Profile from '../screens/user/Profile';
-import Login from '../screens/Login';
-import Signup from '../screens/Signup.js';
-import Cart from '../screens/user/Cart';
-import Checkout from '../screens/user/Checkout';
-import OrderHistory from '../screens/user/OrderHistory';
-import CategoryTab from '../components/categoryTab';
-import Category from '../screens/Category';
-import ProductInfo from '../screens/ProductInfo';
-import {HeaderTitle} from '../components/headerTab';
-import 'react-native-gesture-handler';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import Entypo from 'react-native-vector-icons/Entypo';
-import {reduxStore} from '../redux/_index';
+import React from "react";
+import { useNavigation } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
+import { useSelector } from "react-redux";
+import Home from "../screens/_Home";
+import Profile from "../screens/user/Profile";
+import Login from "../screens/Login";
+import Signup from "../screens/Signup.js";
+import Cart from "../screens/user/Cart";
+import Checkout from "../screens/user/Checkout";
+import OrderHistory from "../screens/user/OrderHistory";
+import CategoryTab from "../components/categoryTab";
+import Category from "../screens/Category";
+import ProductInfo from "../screens/ProductInfo";
+import { HeaderTitle } from "../components/headerTab";
+import "react-native-gesture-handler";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import Entypo from "react-native-vector-icons/Entypo";
+import { reduxStore } from "../redux/_index";
 
 const Stack = createStackNavigator();
 
@@ -30,7 +29,10 @@ const HomeStackScreen = () => {
     <Stack.Navigator>
       <Stack.Screen
         name="HomeScreen"
-        options={{headerTitle: () => <HeaderTitle />, headerLeft: () => <></>}}
+        options={{
+          headerTitle: () => <HeaderTitle />,
+          headerLeft: () => <></>,
+        }}
         component={Home}
       />
       <Stack.Screen
@@ -43,7 +45,10 @@ const HomeStackScreen = () => {
       />
       <Stack.Screen
         name="Category"
-        options={{headerTitle: () => <HeaderTitle />, headerLeft: () => <></>}}
+        options={{
+          headerTitle: () => <HeaderTitle />,
+          headerLeft: () => <></>,
+        }}
         component={Category}
       />
       <Stack.Screen
@@ -55,9 +60,9 @@ const HomeStackScreen = () => {
             <Entypo
               onPress={() => navigation.goBack()}
               name="chevron-thin-left"
-              color={'#00296b'}
+              color={"#00296b"}
               size={25}
-              style={{marginLeft: 10}}
+              style={{ marginLeft: 10 }}
             />
           ),
         }}
@@ -90,59 +95,65 @@ const LoginStackScreen = () => {
 };
 
 const CartStackScreen = () => {
-  const cartItems = useSelector(state => state.cart.cartItems);
+  const cartItems = useSelector((state) => state.cart.cartItems);
   return (
     <Stack.Navigator>
       <Stack.Screen
         name="ShoppingBag"
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
         component={Cart}
       />
       {cartItems && cartItems.length > 0 && (
         <Stack.Screen
           name="Checkout"
-          options={{headerShown: false, unmountOnBlur: true}}
+          options={{ headerShown: false, unmountOnBlur: true }}
           component={Checkout}
         />
       )}
       <Stack.Screen
         name="LoginStack"
         component={LoginStackScreen}
-        options={{headerShown: false, unmountOnBlur: true}}
+        options={{ headerShown: false, unmountOnBlur: true }}
       />
     </Stack.Navigator>
   );
 };
 
-const BottomTabNavigator = () => {
+const BottomTabNavigator = ({ userTheme }) => {
   const navigation = useNavigation();
-  const cartItems = useSelector(state => state.cart.cartItems);
+  const cartItems = useSelector((state) => state.cart.cartItems);
+  // console.log({ userTheme });
+
   return (
     <Tab.Navigator
-      screenOptions={({route}) => ({
-        tabBarIcon: ({color, size}) => {
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color, size }) => {
           let iconName;
 
-          route.name === 'Home'
-            ? (iconName = 'home')
-            : route.name === 'Profile'
-            ? (iconName = 'user')
-            : route.name === 'Cart'
-            ? (iconName = 'shoppingcart')
-            : (iconName = 'profile');
+          route.name === "Home"
+            ? (iconName = "home")
+            : route.name === "Profile"
+            ? (iconName = "user")
+            : route.name === "Cart"
+            ? (iconName = "shoppingcart")
+            : (iconName = "profile");
 
           // You can return any component that you like here!
           return <AntDesign name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#00509d',
-        tabBarInactiveTintColor: 'gray',
-        // headerLeft: () => <HeaderMenu />,
+        tabBarActiveTintColor: "#00509d",
+        tabBarInactiveTintColor: "gray",
         headerTitle: () => <HeaderTitle />,
-      })}>
+        // headerTintColor: userTheme === "light" ? "black" : "white",
+        // headerStyle: {
+        //   backgroundColor: userTheme === "light" ? "white" : "black",
+        // },
+      })}
+    >
       <Tab.Screen
         name="Home"
         component={HomeStackScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Tab.Screen
         name="Profile"
@@ -155,10 +166,10 @@ const BottomTabNavigator = () => {
       <Tab.Screen
         name="Cart"
         component={CartStackScreen}
-        options={cartItems.length > 0 ? {tabBarBadge: cartItems.length} : ''}
+        options={cartItems.length > 0 ? { tabBarBadge: cartItems.length } : ""}
         listeners={{
           tabPress: () => {
-            navigation.navigate('Cart');
+            navigation.navigate("Cart");
           },
         }}
       />

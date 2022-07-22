@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import { useNavigation } from "@react-navigation/core";
-import React, { useContext, useEffect, useState } from "react";
+import React from "react";
 import {
   View,
   Image,
@@ -11,6 +11,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { useDispatch } from "react-redux";
+import SyncStorage from "sync-storage";
 import { updateMainCat } from "../redux/mainCatSlice";
 import commonStyles from "../styles/common.js";
 
@@ -100,6 +101,7 @@ export default function Home() {
         {banners.map((item, i) => (
           <View key={i} style={{ flex: 1 }}>
             <TouchableOpacity
+              style={{ position: "relative" }}
               onPress={() => {
                 dispatch(updateMainCat(item.mainCat));
                 item.mainCat === "horoscope"
@@ -115,9 +117,9 @@ export default function Home() {
                   resizeMode: "cover",
                 }}
               >
+                <ImageBackground style={styles.overlay}></ImageBackground>
                 <Title mainCat={item.mainCat} />
                 {/* TODO: overlay => hide month sign icon */}
-                <ImageBackground style={styles.overlay}></ImageBackground>
               </ImageBackground>
             </TouchableOpacity>
           </View>
