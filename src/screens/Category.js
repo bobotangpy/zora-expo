@@ -44,32 +44,31 @@ export default function Category() {
   const subCat = useSelector((state) => state.subCat.selectedSubCat);
   const style = useSelector((state) => state.style.selectedStyle);
   // const userSign = SyncStorage.get("horoscope");
+  const [userSign, setUserSign] = useState();
   const [items, setItems] = useState();
   const [filteredItems, setFilteredItems] = useState(null);
-
-  const userSign = async () => {
-    return await AsyncStorage.get("horoscope");
-  };
 
   useEffect(() => {
     ref.current?.scrollTo({ y: 0, animated: true });
 
-    if (!style) {
-      dispatch(updateStyle("trending"));
-    }
+    queryProducts();
 
-    if (subCat && userSign) {
-      updateSuggestions(subCat, getGenderId(mainCat));
-    }
+    // if (!style) {
+    //   dispatch(updateStyle("trending"));
+    // }
 
-    api
-      .queryAllProducts()
-      .then((res) => {
-        if (res) {
-          setItems(res);
-        }
-      })
-      .catch((err) => console.log("Get Products Err:", err));
+    // if (subCat && userSign) {
+    //   updateSuggestions(subCat, getGenderId(mainCat));
+    // }
+
+    // api
+    //   .queryAllProducts()
+    //   .then((res) => {
+    //     if (res) {
+    //       setItems(res);
+    //     }
+    //   })
+    //   .catch((err) => console.log("Get Products Err:", err));
   }, []);
 
   useEffect(() => {
@@ -98,6 +97,28 @@ export default function Category() {
       }
     }
   }, [items, mainCat, subCat, style]);
+
+  const queryProducts = async () => {
+    let sign = await AsyncStorage.get("horoscope");
+    setUserSign(sign);
+
+    if (!style) {
+      dispatch(updateStyle("trending"));
+    }
+
+    if (subCat && sign) {
+      updateSuggestions(subCat, getGenderId(mainCat));
+    }
+
+    await api
+      .queryAllProducts()
+      .then((res) => {
+        if (res) {
+          setItems(res);
+        }
+      })
+      .catch((err) => console.log("Get Products Err:", err));
+  };
 
   const getGenderId = (gender) => {
     if (gender === "men") {

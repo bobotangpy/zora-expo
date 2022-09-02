@@ -30,39 +30,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const api = new API();
 
-const getItem = async (item) => {
-  try {
-    return await AsyncStorage.getItem(item);
-  } catch (e) {
-    console.log("ERROR:::", e);
-  }
-};
-
-const getUserInfo = async () => {
-  context.setLoading(true);
-  let user = await asyncStorage.getItem("user");
-  if (user) {
-    // setEmail(SyncStorage.get("email"));
-    // setName(SyncStorage.get("username"));
-    // setSign(SyncStorage.get("horoscope"));
-    setEmail(await asyncStorage.getItem("email"));
-    setName(await asyncStorage.getItem("username"));
-    setSign(await asyncStorage.getItem("horoscope"));
-
-    await api
-      .queryUserProfile(user)
-      .then((res) => {
-        // console.log('USER DATA:::', res);
-        if (res && res.hasOwnProperty("name")) {
-          setBday(moment(res.birthday).format("YYYY/MM/DD"));
-        } else {
-          console.log("No user data");
-        }
-      })
-      .catch((err) => console.log(err));
-  }
-};
-
 export default function Profile() {
   const context = useContext(AppContext);
   const dispatch = useDispatch();
@@ -77,16 +44,12 @@ export default function Profile() {
   const [imgPath, setImgPath] = useState();
 
   useEffect(() => {
-    // console.log("PROFILE ::: ", SyncStorage.get("user_token"));
+    getUserInfo();
 
     // context.setLoading(true);
     // let user = SyncStorage.get("user_id");
     // let user = getItem("user_id");
-    getUserInfo();
     // if (user) {
-    //   // setEmail(SyncStorage.get("email"));
-    //   // setName(SyncStorage.get("username"));
-    //   // setSign(SyncStorage.get("horoscope"));
     //   setEmail(SyncStorage.get("email"));
     //   setName(SyncStorage.get("username"));
     //   setSign(SyncStorage.get("horoscope"));
@@ -131,6 +94,27 @@ export default function Profile() {
       setSign(sign);
     }
   }, [bday]);
+
+  const getUserInfo = async () => {
+    context.setLoading(true);
+    let user = await AsyncStorage.getItem("user");
+    if (user) {
+      setEmail(await AsyncStorage.getItem("email"));
+      setName(await AsyncStorage.getItem("username"));
+      setSign(await AsyncStorage.getItem("horoscope"));
+
+      await api
+        .queryUserProfile(user)
+        .then((res) => {
+          if (res && res.hasOwnProperty("name")) {
+            setBday(moment(res.birthday).format("YYYY/MM/DD"));
+          } else {
+            console.log("No user data");
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  };
 
   const handleUpdateProfile = () => {
     api.updateUserProfile(context.userId, name, pwd, bday, sign).then((res) => {

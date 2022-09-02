@@ -22,24 +22,24 @@ const cartSlice = createSlice({
   name: "cart",
   initialState: {
     // cartItems: SyncStorage.get("cartItems") || [],
-    cartItems: (await getItems("cartItems")) || [],
+    cartItems: async () => (await AsyncStorage.getItem("cartItems")) || [],
     total: null,
   },
   reducers: {
-    updateCart: (state, action) => {
+    updateCart: async (state, action) => {
       state.cartItems = action.payload;
       // Update localStorage to persist data when page refresh
       // SyncStorage.set("cartItems", state.cartItems);
-      createItems(state.cartItems);
+      await AsyncStorage.setItem("cartItems", state.cartItems);
     },
-    deleteItem: (state, action) => {
+    deleteItem: async (state, action) => {
       _.remove(state.cartItems, (item) => {
         return (
           item.id === action.payload.id && item.size === action.payload.size
         );
       });
       // SyncStorage.set("cartItems", state.cartItems);
-      createItems(state.cartItems);
+      await AsyncStorage.setItem("cartItems", state.cartItems);
     },
     updateTotal: (state) => {
       let prices = [];

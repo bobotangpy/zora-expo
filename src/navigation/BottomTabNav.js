@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -121,16 +121,17 @@ const CartStackScreen = () => {
   );
 };
 
-const BottomTabNavigator = ({ userTheme }) => {
+const BottomTabNavigator = () => {
   const navigation = useNavigation();
   const cartItems = useSelector((state) => state.cart.cartItems);
+  const [token, setToken] = useState();
+
+  useEffect(() => {
+    getToken();
+  }, []);
 
   const getToken = async () => {
-    try {
-      return await AsyncStorage.getItem("user_token");
-    } catch (e) {
-      console.log("ERROR:::", e);
-    }
+    setToken(await AsyncStorage.getItem("user_token"));
   };
 
   return (
@@ -166,11 +167,11 @@ const BottomTabNavigator = ({ userTheme }) => {
           // reduxStore.getState().auth.isAuthenticated
           // SyncStorage.get("user_token") &&
           // SyncStorage.get("user_token") !== undefined
-          getToken() && getToken() !== undefined ? Profile : LoginStackScreen
+          token && token !== undefined ? Profile : LoginStackScreen
         }
         options={{
           // unmountOnBlur: !SyncStorage.get("user_token") ? true : false,
-          unmountOnBlur: !getToken() ? true : false,
+          unmountOnBlur: !token ? true : false,
         }}
       />
       <Tab.Screen

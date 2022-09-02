@@ -5,28 +5,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const api = new API();
 
-const getItem = async (item) => {
-  try {
-    return await AsyncStorage.getItem(item);
-  } catch (e) {
-    console.log("ERROR:::", e);
-  }
-};
-const setItem = async (name, item) => {
-  try {
-    await AsyncStorage.setItem(name, item);
-  } catch (e) {
-    console.log("ERROR:::", e);
-  }
-};
-const removeItem = async (item) => {
-  try {
-    await AsyncStorage.removeItem(item);
-  } catch (e) {
-    console.log("ERROR:::", e);
-  }
-};
-
 // Slice
 const authSlice = createSlice({
   name: "auth",
@@ -35,10 +13,10 @@ const authSlice = createSlice({
     // userId: SyncStorage.get('user_id'),
     // userName: SyncStorage.get('username'),
     // userSign: SyncStorage.get('horoscope'),
-    isAuthenticated: await getItem("user_token"),
-    userId: await getItem("user_id"),
-    userName: await getItem("username"),
-    userSign: await getItem("horoscope"),
+    isAuthenticated: async () => await AsyncStorage.getItem("user_token"),
+    userId: async () => await AsyncStorage.getItem("user_id"),
+    userName: async () => await AsyncStorage.getItem("username"),
+    userSign: async () => await AsyncStorage.getItem("horoscope"),
     msg: null,
   },
   reducers: {
@@ -80,12 +58,12 @@ export const loginUser = (email, password) => async (dispatch) => {
           // SyncStorage.set('username', res.name);
           // SyncStorage.set('email', email);
           // SyncStorage.set('horoscope', res.horoscope);
-          await setItem("user_token", res.token);
-          await setItem("user_id", res.id);
-          await setItem("username", res.name);
-          await setItem("email", email);
-          await setItem("horoscope", res.horoscope);
-          dispatch(loginSuccess(res));
+          await AsyncStorage.setItem("user_token", res.token);
+          await AsyncStorage.setItem("user_id", res.id);
+          await AsyncStorage.setItem("username", res.name);
+          await AsyncStorage.setItem("email", email);
+          await AsyncStorage.setItem("horoscope", res.horoscope);
+          await dispatch(loginSuccess(res));
         }
       }
     });
@@ -103,13 +81,13 @@ export const logoutUser = async () => {
     // SyncStorage.remove("email");
     // SyncStorage.remove("horoscope");
     // SyncStorage.remove("cartItems");
-    await removeItem("user_token");
-    await removeItem("user_id");
-    await removeItem("username");
-    await removeItem("email");
-    await removeItem("horoscope");
-    await removeItem("cartItems");
+    await AsyncStorage.removeItem("user_token");
+    await AsyncStorage.removeItem("user_id");
+    await AsyncStorage.removeItem("username");
+    await AsyncStorage.removeItem("email");
+    await AsyncStorage.removeItem("horoscope");
+    await AsyncStorage.removeItem("cartItems");
 
-    dispatch(logout());
+    await dispatch(logout());
   };
 };

@@ -17,16 +17,12 @@ export const AppProvider = ({ children }) => {
   const [fullWidth, setFullWidth] = useState(true);
   const [loggedOut, setLoggedOut] = useState(true);
 
-  const getItem = async (item) => {
-    try {
-      return await AsyncStorage.getItem(item);
-    } catch (e) {
-      console.log("ERROR:::", e);
-    }
+  const getUserSign = async () => {
+    await AsyncStorage.getItem("horoscope");
   };
 
   useEffect(() => {
-    if (getItem("horoscope")) setUserSign(getItem("horoscope"));
+    if (getUserSign()) setUserSign(await AsyncStorage.getItem("horoscope"));
 
     let date = moment().format("YYYY-MM-DD");
     let month = Number(date.split("-")[1]);

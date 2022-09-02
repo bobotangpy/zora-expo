@@ -40,11 +40,7 @@ export default function Checkout() {
   }, [cartItems]);
 
   const getItem = async () => {
-    try {
-      return await AsyncStorage.getItem("user_id");
-    } catch (e) {
-      console.log("ERROR:::", e);
-    }
+    await AsyncStorage.getItem("user_id");
   };
 
   const handlePlaceOrder = async () => {

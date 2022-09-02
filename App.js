@@ -21,7 +21,7 @@ const App = () => {
 
   useEffect(() => {
     if (sign) {
-      setSign(sign);
+      setMonthSign(sign);
       // Storage.set("monthSign", sign);
       let signName = sign.toLowerCase();
       setImgPath(images.signName);
@@ -34,7 +34,7 @@ const App = () => {
     // Storage.set("imgPath", imgPath);
   }, [imgPath]);
 
-  const setSign = async (sign) => {
+  const setMonthSign = async (sign) => {
     try {
       await AsyncStorage.setItem("monthSign", sign);
     } catch (e) {

@@ -21,18 +21,13 @@ export default function OrderHistory() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const getId = async () => {
-    try {
-      return await AsyncStorage.getItem("user_id");
-    } catch (e) {
-      console.log("ERROR:::", e);
-    }
+  const getUserId = async () => {
+    setUserId(await AsyncStorage.getItem("user_id"));
   };
 
   useEffect(() => {
     // setUserId(SyncStorage.get("user_id"));
-    let res = await getId();
-    setUserId(res);
+    getUserId();
   }, []);
 
   useEffect(() => {
