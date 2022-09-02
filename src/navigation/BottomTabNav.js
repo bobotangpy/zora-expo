@@ -18,7 +18,8 @@ import "react-native-gesture-handler";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Entypo from "react-native-vector-icons/Entypo";
 import { reduxStore } from "../redux/_index";
-import SyncStorage from "sync-storage";
+// import SyncStorage from "sync-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createStackNavigator();
 
@@ -123,7 +124,14 @@ const CartStackScreen = () => {
 const BottomTabNavigator = ({ userTheme }) => {
   const navigation = useNavigation();
   const cartItems = useSelector((state) => state.cart.cartItems);
-  // console.log({ userTheme });
+
+  const getToken = async () => {
+    try {
+      return await AsyncStorage.getItem("user_token");
+    } catch (e) {
+      console.log("ERROR:::", e);
+    }
+  };
 
   return (
     <Tab.Navigator
@@ -145,10 +153,6 @@ const BottomTabNavigator = ({ userTheme }) => {
         tabBarActiveTintColor: "#00509d",
         tabBarInactiveTintColor: "gray",
         headerTitle: () => <HeaderTitle />,
-        // headerTintColor: userTheme === "light" ? "black" : "white",
-        // headerStyle: {
-        //   backgroundColor: userTheme === "light" ? "white" : "black",
-        // },
       })}
     >
       <Tab.Screen
@@ -160,13 +164,13 @@ const BottomTabNavigator = ({ userTheme }) => {
         name="Profile"
         component={
           // reduxStore.getState().auth.isAuthenticated
-          SyncStorage.get("user_token") &&
-          SyncStorage.get("user_token") !== undefined
-            ? Profile
-            : LoginStackScreen
+          // SyncStorage.get("user_token") &&
+          // SyncStorage.get("user_token") !== undefined
+          getToken() && getToken() !== undefined ? Profile : LoginStackScreen
         }
         options={{
-          unmountOnBlur: !SyncStorage.get("user_token") ? true : false,
+          // unmountOnBlur: !SyncStorage.get("user_token") ? true : false,
+          unmountOnBlur: !getToken() ? true : false,
         }}
       />
       <Tab.Screen

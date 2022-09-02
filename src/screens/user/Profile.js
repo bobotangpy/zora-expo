@@ -25,10 +25,43 @@ import loginStyles from "../../styles/loginStyles";
 import { images } from "../../utilities/images";
 import API from "../../services/api";
 import moment from "moment";
-import SyncStorage from "sync-storage";
-// import StyleSheet from "react-native-media-query";
+// import SyncStorage from "sync-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const api = new API();
+
+const getItem = async (item) => {
+  try {
+    return await AsyncStorage.getItem(item);
+  } catch (e) {
+    console.log("ERROR:::", e);
+  }
+};
+
+const getUserInfo = async () => {
+  context.setLoading(true);
+  let user = await asyncStorage.getItem("user");
+  if (user) {
+    // setEmail(SyncStorage.get("email"));
+    // setName(SyncStorage.get("username"));
+    // setSign(SyncStorage.get("horoscope"));
+    setEmail(await asyncStorage.getItem("email"));
+    setName(await asyncStorage.getItem("username"));
+    setSign(await asyncStorage.getItem("horoscope"));
+
+    await api
+      .queryUserProfile(user)
+      .then((res) => {
+        // console.log('USER DATA:::', res);
+        if (res && res.hasOwnProperty("name")) {
+          setBday(moment(res.birthday).format("YYYY/MM/DD"));
+        } else {
+          console.log("No user data");
+        }
+      })
+      .catch((err) => console.log(err));
+  }
+};
 
 export default function Profile() {
   const context = useContext(AppContext);
@@ -44,27 +77,32 @@ export default function Profile() {
   const [imgPath, setImgPath] = useState();
 
   useEffect(() => {
-    console.log("PROFILE ::: ", SyncStorage.get("user_token"));
+    // console.log("PROFILE ::: ", SyncStorage.get("user_token"));
 
-    context.setLoading(true);
-    let user = SyncStorage.get("user_id");
-    if (user) {
-      setEmail(SyncStorage.get("email"));
-      setName(SyncStorage.get("username"));
-      setSign(SyncStorage.get("horoscope"));
+    // context.setLoading(true);
+    // let user = SyncStorage.get("user_id");
+    // let user = getItem("user_id");
+    getUserInfo();
+    // if (user) {
+    //   // setEmail(SyncStorage.get("email"));
+    //   // setName(SyncStorage.get("username"));
+    //   // setSign(SyncStorage.get("horoscope"));
+    //   setEmail(SyncStorage.get("email"));
+    //   setName(SyncStorage.get("username"));
+    //   setSign(SyncStorage.get("horoscope"));
 
-      api
-        .queryUserProfile(user)
-        .then((res) => {
-          // console.log('USER DATA:::', res);
-          if (res && res.hasOwnProperty("name")) {
-            setBday(moment(res.birthday).format("YYYY/MM/DD"));
-          } else {
-            console.log("No user data");
-          }
-        })
-        .catch((err) => console.log(err));
-    }
+    //   api
+    //     .queryUserProfile(user)
+    //     .then((res) => {
+    //       // console.log('USER DATA:::', res);
+    //       if (res && res.hasOwnProperty("name")) {
+    //         setBday(moment(res.birthday).format("YYYY/MM/DD"));
+    //       } else {
+    //         console.log("No user data");
+    //       }
+    //     })
+    //     .catch((err) => console.log(err));
+    // }
   }, []);
 
   useEffect(() => {

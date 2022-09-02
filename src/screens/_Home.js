@@ -11,7 +11,8 @@ import {
   StyleSheet,
 } from "react-native";
 import { useDispatch } from "react-redux";
-import SyncStorage from "sync-storage";
+// import SyncStorage from "sync-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { updateMainCat } from "../redux/mainCatSlice";
 import commonStyles from "../styles/common.js";
 
@@ -20,6 +21,21 @@ const banners = [
   { img: require("../assets/imgs/women1.jpg"), mainCat: "women" },
   { img: require("../assets/imgs/men1.jpg"), mainCat: "men" },
 ];
+
+const getPath = async () => {
+  try {
+    return await AsyncStorage.getItem("imgPath");
+  } catch (e) {
+    console.log("ERROR:::", e);
+  }
+};
+const getSign = async () => {
+  try {
+    return await AsyncStorage.getItem("monthSign");
+  } catch (e) {
+    console.log("ERROR:::", e);
+  }
+};
 
 const Title = ({ mainCat }) => {
   let txt =
@@ -31,7 +47,8 @@ const Title = ({ mainCat }) => {
       ? "Shop Men"
       : "";
 
-  let imgPath = SyncStorage.get("imgPath");
+  // let imgPath = SyncStorage.get("imgPath");
+  let imgPath = getPath();
 
   return (
     <View style={styles.title}>
@@ -65,7 +82,8 @@ const Title = ({ mainCat }) => {
               { fontSize: 28, backgroundColor: "#000", opacity: 0.8 },
             ]}
           >
-            {SyncStorage.get("monthSign")}
+            {/* {SyncStorage.get("monthSign")} */}
+            {getSign()}
           </Text>
           <Image
             source={imgPath}

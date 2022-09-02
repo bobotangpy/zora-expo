@@ -2,7 +2,8 @@ import React, { createContext, useState, useEffect } from "react";
 import { calculateHoroscope } from "../utilities/utils";
 import moment from "moment";
 import Loading from "../components/loading";
-import SyncStorage from "sync-storage";
+// import SyncStorage from "sync-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const AppContext = createContext();
 
@@ -16,8 +17,16 @@ export const AppProvider = ({ children }) => {
   const [fullWidth, setFullWidth] = useState(true);
   const [loggedOut, setLoggedOut] = useState(true);
 
+  const getItem = async (item) => {
+    try {
+      return await AsyncStorage.getItem(item);
+    } catch (e) {
+      console.log("ERROR:::", e);
+    }
+  };
+
   useEffect(() => {
-    if (SyncStorage.get("horoscope")) setUserSign(SyncStorage.get("horoscope"));
+    if (getItem("horoscope")) setUserSign(getItem("horoscope"));
 
     let date = moment().format("YYYY-MM-DD");
     let month = Number(date.split("-")[1]);

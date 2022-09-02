@@ -12,7 +12,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.bobot.zora-expo"
@@ -20,7 +22,8 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.bobot.zoraexpo"
     },
     "web": {
       "favicon": "./assets/favicon.png"

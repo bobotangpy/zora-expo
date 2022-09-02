@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -10,17 +10,18 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
-} from 'react-native';
-import syncStorage from 'sync-storage';
-import {AppContext} from '../../services/appProvider';
-import API from '../../services/api';
-import loginStyles from '../../styles/loginStyles';
-import orderHistoryStyles from '../../styles/orderHistoryStyles';
-import {useDispatch, useSelector} from 'react-redux';
-import commonStyles from '../../styles/common';
-import {updateTotal, updateCart} from '../../redux/cartSlice';
-import {useNavigation} from '@react-navigation/core';
-import {BgWrapper} from '../../components/bgWrapper';
+} from "react-native";
+// import SyncStorage from "sync-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AppContext } from "../../services/appProvider";
+import API from "../../services/api";
+import loginStyles from "../../styles/loginStyles";
+import orderHistoryStyles from "../../styles/orderHistoryStyles";
+import { useDispatch, useSelector } from "react-redux";
+import commonStyles from "../../styles/common";
+import { updateTotal, updateCart } from "../../redux/cartSlice";
+import { useNavigation } from "@react-navigation/core";
+import { BgWrapper } from "../../components/bgWrapper";
 
 const api = new API();
 
@@ -29,8 +30,8 @@ export default function Checkout() {
   const navigation = useNavigation();
   const context = useContext(AppContext);
   const dispatch = useDispatch();
-  const cartItems = useSelector(state => state.cart.cartItems);
-  const total = useSelector(state => state.cart.total);
+  const cartItems = useSelector((state) => state.cart.cartItems);
+  const total = useSelector((state) => state.cart.total);
   const [disabled, setDisabled] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 
@@ -38,12 +39,21 @@ export default function Checkout() {
     if (cartItems) dispatch(updateTotal());
   }, [cartItems]);
 
-  const handlePlaceOrder = () => {
+  const getItem = async () => {
+    try {
+      return await AsyncStorage.getItem("user_id");
+    } catch (e) {
+      console.log("ERROR:::", e);
+    }
+  };
+
+  const handlePlaceOrder = async () => {
     setDisabled(true);
     context.setLoading(true);
-    let id = syncStorage.get('user_id');
+    // let id = SyncStorage.get("user_id");
+    let id = await getItem();
 
-    if (!id) navigation.navigate('LoginStack');
+    if (!id) navigation.navigate("LoginStack");
 
     // api.createOrder(id, cartItems, total).then(res => {
     //   console.log(res);
@@ -67,7 +77,7 @@ export default function Checkout() {
 
   return (
     <BgWrapper>
-      <SafeAreaView style={{height: '100%'}}>
+      <SafeAreaView style={{ height: "100%" }}>
         <ScrollView ref={ref}>
           <View style={loginStyles.wrapper}>
             <Text style={[loginStyles.title, orderHistoryStyles.title]}>
@@ -80,29 +90,29 @@ export default function Checkout() {
                   <View key={i} style={orderHistoryStyles.innerWrapper}>
                     <View>
                       <Image
-                        source={{uri: item.img}}
-                        style={{width: 80, height: 120}}
+                        source={{ uri: item.img }}
+                        style={{ width: 80, height: 120 }}
                       />
                     </View>
 
                     <View style={orderHistoryStyles.imgPrice}>
                       <Text>{item.name}</Text>
 
-                      <Text style={{marginTop: 15}}>{item.price}</Text>
+                      <Text style={{ marginTop: 15 }}>{item.price}</Text>
                     </View>
 
-                    <Text style={{marginRight: 15}}>
+                    <Text style={{ marginRight: 15 }}>
                       Size:&nbsp;
-                      {typeof item.size === 'number'
+                      {typeof item.size === "number"
                         ? item.size
                         : item.size.toUpperCase()}
                     </Text>
 
-                    <Text style={{marginRight: 15}}>x{item.qty}</Text>
+                    <Text style={{ marginRight: 15 }}>x{item.qty}</Text>
                   </View>
                 ))}
-                <View style={{marginTop: 20}}>
-                  <Text style={{fontSize: 16, textAlign: 'right'}}>
+                <View style={{ marginTop: 20 }}>
+                  <Text style={{ fontSize: 16, textAlign: "right" }}>
                     {`Items Total: HKD$${total}`}
                   </Text>
                 </View>
@@ -116,7 +126,8 @@ export default function Checkout() {
             <TouchableOpacity
               disabled={disabled}
               style={commonStyles.blockBtn}
-              onPress={handlePlaceOrder}>
+              onPress={handlePlaceOrder}
+            >
               <Text style={commonStyles.label}>Pay and Place Order</Text>
             </TouchableOpacity>
           </View>
@@ -130,7 +141,8 @@ export default function Checkout() {
               visible={openModal}
               onRequestClose={() => {
                 setOpenModal(false);
-              }}>
+              }}
+            >
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                   <Text style={styles.modalText}>
@@ -148,33 +160,33 @@ export default function Checkout() {
 
 const styles = StyleSheet.create({
   darkBg: {
-    backgroundColor: '#000',
+    backgroundColor: "#000",
     opacity: 0.8,
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: Dimensions.get('window').height,
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    height: Dimensions.get("window").height,
   },
   checkoutBtn: {
-    position: 'relative',
-    alignSelf: 'center',
+    position: "relative",
+    alignSelf: "center",
     marginVertical: 20,
-    width: Dimensions.get('window').width - 30,
+    width: Dimensions.get("window").width - 30,
   },
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 22,
   },
   modalView: {
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     // borderRadius: 20,
     padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -182,6 +194,6 @@ const styles = StyleSheet.create({
   },
   modalText: {
     marginBottom: 15,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });

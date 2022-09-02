@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import AppNavigator from "./src/navigation/AppNavigator";
-import SyncStorage from "sync-storage";
+// import SyncStorage from "sync-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Theme } from "./src/utilities/themes";
 import { calculateHoroscope } from "./src/utilities/utils";
 import { images } from "./src/utilities/images";
@@ -20,7 +21,8 @@ const App = () => {
 
   useEffect(() => {
     if (sign) {
-      SyncStorage.set("monthSign", sign);
+      setSign(sign);
+      // Storage.set("monthSign", sign);
       let signName = sign.toLowerCase();
       setImgPath(images.signName);
     }
@@ -28,11 +30,28 @@ const App = () => {
   }, [sign]);
 
   useEffect(() => {
-    if (imgPath) SyncStorage.set("imgPath", imgPath);
+    if (imgPath) setPath(imgPath);
+    // Storage.set("imgPath", imgPath);
   }, [imgPath]);
 
+  const setSign = async (sign) => {
+    try {
+      await AsyncStorage.setItem("monthSign", sign);
+    } catch (e) {
+      console.log("ERROR:::", e);
+    }
+  };
+
+  const setPath = async (imgPath) => {
+    try {
+      await AsyncStorage.setItem("imgPath", imgPath);
+    } catch (e) {
+      console.log("ERROR:::", e);
+    }
+  };
+
   const initStorage = async () => {
-    const data = await SyncStorage.init();
+    // const data = await SyncStorage.init();
     console.log("AsyncStorage is ready!", data);
 
     let date = moment().format("YYYY-MM-DD");
